@@ -5,8 +5,7 @@ import android.util.Log;
 import cs301.Soccer.soccerPlayer.SoccerPlayer;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.*;
 
 /**
@@ -200,27 +199,26 @@ public class SoccerDatabase implements SoccerDB {
     @SuppressLint("DefaultLocale")
     @Override
     public boolean writeData(File file) {
+        PrintWriter writer;
         try {
-            if (file.exists()) {
-                file.delete();
-            }
-            file.createNewFile();
-            FileWriter writer = new FileWriter(file.getName());
-            for (SoccerPlayer player : database.values()) {
-                writer.write(String.format("%s;%s;%s;%d;%d;%d;%d",
-                        player.getFirstName(),
-                        player.getLastName(),
-                        player.getTeamName(),
-                        player.getUniform(),
-                        player.getGoals(),
-                        player.getYellowCards(),
-                        player.getRedCards()
-                ));
-            }
-            writer.close();
-        } catch (IOException e) {
+            writer = new PrintWriter(file);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
             return false;
         }
+
+        for (SoccerPlayer player : database.values()) {
+            writer.write(String.format("%s;%s;%s;%d;%d;%d;%d\n",
+                    player.getFirstName(),
+                    player.getLastName(),
+                    player.getTeamName(),
+                    player.getUniform(),
+                    player.getGoals(),
+                    player.getYellowCards(),
+                    player.getRedCards()
+            ));
+        }
+        writer.close();
         return true;
     }
 
